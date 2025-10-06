@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Crowd Count Dashboard</title>
+<link rel="stylesheet" href="dashboard.css">
+<link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+<div class="container">
+    <div class="sidebar">
+        <h2>Crowd Count</h2>
+        <ul>
+            <li id="menu-dashboard"><i class='bx bxs-dashboard'></i> Dashboard</li>
+            <li id="menu-upload"><i class='bx bx-upload'></i> Upload Video</li>
+            <li id="menu-live"><i class='bx bx-camera-movie'></i> Live Camera</li>
+            <li id="menu-create-zone"><i class='bx bx-brush'></i> Create Zone</li>
+            <li id="menu-manage-zones"><i class='bx bx-map-pin'></i> Manage Zones</li>
+            <li id="menu-analysis"><i class='bx bx-stats'></i> Analysis</li>
+            <li id="menu-profiles"><i class='bx bxs-user-detail'></i> Profiles</li>
+            <li id="menu-logout"><i class='bx bx-log-out'></i> Logout</li>
+        </ul>
+    </div>
+
+    <div class="main-content">
+        <div class="dashboard-container">
+        <h1 id="welcomeTitle">Welcome, <span id="usernameDisplay"></span>🙋‍♀️</h1>
+       
+        <div class="video-container" style="display: none;">
+            <video id="video-feed" controls loop muted></video>
+            <canvas id="zone-canvas"></canvas>
+            <img id="overlayFrame" style="display: none;" />
+            <img id="heatmapFrame" style="display: none;" />
+        </div>
+
+        <div id="content-area">
+            <div id="dashboard-view" class="content-card">
+                <h2>Dashboard Overview 📊</h2>
+                  <div class="dashboard-header">
+    <h3>DASHBOARD OVERVIEW 📊</h3>
+    <p>Welcome to your analytics dashboard. Explore real-time insights, crowd analysis, and system modules.</p>
+  </div>
+
+  <div class="card-grid">
+    <div class="card">
+      <h4>👁️ Live Monitoring</h4>
+      <p>Access live camera feeds and detect crowd density in real time with AI-powered vision.</p>
+    </div>
+
+    <div class="card">
+      <h4>🎥 Video Upload</h4>
+      <p>Upload pre-recorded surveillance videos for automated crowd analysis and pattern detection.</p>
+    </div>
+
+    <div class="card">
+      <h4>🗺️ Zone Management</h4>
+      <p>Create and manage custom zones to analyze people flow and optimize safety in high-density areas.</p>
+    </div>
+
+    <div class="card">
+      <h4>📈 Data Analytics</h4>
+      <p>View reports and heatmaps showing real-time and historical trends of crowd movement and count.</p>
+    </div>
+
+    <div class="card">
+      <h4>⚙️ Smart Alerts</h4>
+      <p>Receive automatic alerts when crowd limits are exceeded in monitored areas.</p>
+    </div>
+
+    <div class="card">
+      <h4>🧠 AI Insights</h4>
+      <p>Leverage machine learning algorithms for predictive crowd management and decision-making.</p>
+    </div>
+  </div>
+</div>
+
+            </div>
+
+            <div id="upload-view" class="content-card" style="display: none;">
+                <h2>Upload a Video <i class='bx bx-upload'></i></h2>
+                <input type="file" id="video-upload-input" accept="video/*">
+                <button id="upload-btn">Play Video</button>
+                <button id="upload-server-btn">Upload to Server</button>
+            </div>
+
+           <div id="live-view" class="content-card" style="display: none;">
+    <h2>Live Camera Analysis 👁️</h2>
+    
+    <div class="live-controls">
+        <button id="start-live-stream" class="btn btn-primary">Start Camera Feed</button>
+        <button id="stop-live-stream" class="btn btn-secondary" style="display: none;">Stop Camera Feed</button>
+        
+        <button id="start-live-analysis-btn" class="btn btn-success" style="display: none;">Start Live Analysis</button>
+        <button id="stop-live-analysis-btn" class="btn btn-danger" style="display: none;">Stop Live Analysis</button>
+    </div>
+
+    <div class="video-analysis-grid">
+        <div class="video-feed-wrapper">
+            <h3>Raw Feed / Zone Drawing</h3>
+            <div id="live-video-container" style="display: none;">
+                <img id="live-video-feed" style="width: 100%; height: auto;" alt="Live Camera Feed"/>
+                <canvas id="live-zone-canvas"></canvas>
+            </div>
+        </div>
+
+        <div class="analysis-output-wrapper">
+            <h3>Detection Overlay (Live)</h3>
+            <img id="liveOverlayFrame" style="width: 100%; height: auto; display: none;" alt="Detection Overlay"/>
+        </div>
+        
+        <div class="analysis-output-wrapper">
+            <h3>Crowd Heatmap (Live)</h3>
+            <img id="liveHeatmapFrame" style="width: 100%; height: auto; display: none;" alt="Crowd Heatmap"/>
+        </div>
+    </div>
+    
+    <div class="zone-analysis live-analysis-summary">
+        <h3>Live Zone Counts</h3>
+        <ul id="live-analysis-list">
+            <li>Start analysis to see real-time data...</li>
+        </ul>
+    </div>
+</div>
+            <div id="create-zone-view" class="content-card" style="display: none;">
+                <h2>Create a New Zone <i class='bx bx-brush'></i></h2>
+                <div class="form-group">
+                    <label for="zone-name">Zone Name:</label>
+                    <input type="text" id="zone-name" placeholder="e.g., Entrance">
+                </div>
+                <button id="save-zone-btn">Save Zone</button>
+                <button id="clear-zone-btn">Clear Zone</button>
+                <button id="start-analysis-btn">Start Analysis</button>
+                <button id="stop-analysis-btn" style="background-color: #f44336;" disabled>Stop Analysis</button>
+            </div>
+
+            <div id="manage-zones-view" class="content-card" style="display: none;">
+                <h2>Manage Zones <i class='bx bx-map-pin'></i></h2>
+                <ul id="zones-list"></ul>
+            </div>
+
+            <div id="analysis-view" class="content-card" style="display: none;">
+                <h2>Live Analysis Dashboard 📊</h2>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <h3>Current People Count</h3>
+                        <div class="stat-number" id="currentCount">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Peak Count Today</h3>
+                        <div class="stat-number" id="peakCount">0</div>
+                    </div>
+                </div>
+
+                <div class="charts-container">
+                    <div class="chart-box" style="flex-basis: 100%;">
+                        <h3>Hourly Trend (Today)</h3>
+                        <canvas id="hourly-chart"></canvas>
+                    </div>
+                </div>
+
+                <div class="charts-container" style="margin-top: 0;">
+                    <div class="chart-box">
+                        <h3>Activity Heatmap</h3>
+                        <canvas id="bubble-chart"></canvas>
+                    </div>
+                    <div class="chart-box">
+                        <h3>Zone Traffic Summary</h3>
+                        <canvas id="zoneChart"></canvas>
+                    </div>
+                </div>
+                
+                <div class="zone-analysis">
+                    <h3>Zone Details</h3>
+                    <ul id="analysis-list"></ul>
+                </div>
+            </div>
+            <div id="profiles-view" class="content-card" style="display: none;">
+    <h2>User Profiles <i class='bx bxs-user-detail'></i></h2>
+    <div class="profiles-table-container">
+        <table id="profiles-table" class="data-table">
+            <thead>
+                <tr>
+                    <th>Username</th>
+                    <th>Email ID</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td colspan="3">Select Profiles from the sidebar...</td></tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+        </div>
+    </div>
+</div>
+
+<!-- 🚨 Capacity Alert (floats globally, outside main container) -->
+<div id="capacity-alert-box" class="alert-box capacity-alert alert-error" style="display:none;">
+    <i class='bx bxs-error-alt'></i>
+    <span id="capacity-alert-text"></span>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
